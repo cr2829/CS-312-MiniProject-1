@@ -9,22 +9,38 @@
   </head>
   <body class="container py-4">
     <h1 class="mb-4">Blog Posts</h1>
-    <a class="btn btn-primary mb-3" href="/new">Create New Post</a>
+
+    <% if (user && user.user_id) { %>
+    <p class="mb-3">
+      Welcome, <strong><%= user.name %></strong> |
+      <a href="/logout" class="btn btn-outline-secondary btn-sm">Logout</a>
+      <a href="/new" class="btn btn-primary btn-sm ms-2">Create New Post</a>
+    </p>
+    <% } else { %>
+    <p class="mb-3">
+      <a href="/signin" class="btn btn-outline-primary btn-sm">Sign In</a>
+      <a href="/signup" class="btn btn-outline-success btn-sm ms-2">Sign Up</a>
+    </p>
+    <% } %>
 
     <ul class="list-group">
-      <% posts.forEach((post, index) => { %>
+      <% posts.forEach((post) => { %>
       <li class="list-group-item">
-        <h2><%= post.title %></h2>
-        <p><%= post.content %></p>
+        <h4><%= post.title %></h4>
+        <p><%= post.body %></p>
         <small class="text-muted">
-          By <%= post.author %> on <%= post.createdAt.toLocaleString() %>
+          By <%= post.creator_name %> on <%= new
+          Date(post.date_created).toLocaleString() %>
         </small>
+        <% if (user && user.user_id === post.creator_user_id) { %>
         <div class="mt-2">
-          <a class="btn btn-sm btn-secondary" href="/posts/<%= index %>/edit"
+          <a
+            class="btn btn-sm btn-secondary"
+            href="/posts/<%= post.blog_id %>/edit"
             >Edit</a
           >
           <form
-            action="/posts/<%= index %>/delete"
+            action="/posts/<%= post.blog_id %>/delete"
             method="POST"
             style="display: inline"
           >
@@ -37,6 +53,7 @@
             </button>
           </form>
         </div>
+        <% } %>
       </li>
       <% }) %>
     </ul>
